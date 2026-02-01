@@ -1,6 +1,7 @@
-#include <stdio.h>
+#include <game/game.h>
 
 int main(int argc, char**argv) {
-	printf("hi there!");
+	GameInit();
+	GameRun();
 	return 0;
 }
