@@ -1,12 +1,27 @@
 #include <game/game.h>
+#include <game/screen.h>
 #include <raylib.h>
 
 typedef struct _gameState {
 	bool running;
-	// Screen screen;
+	Screen *screen;
 } GameState;
 
 GameState *instance = nullptr;
+
+void GameSetScreen(Screen* value) {
+	if (instance->screen != nullptr) {
+		ScreenUnload(instance->screen);
+	}
+	ScreenDispose(instance->screen);
+	instance->screen = value;
+	if (instance->screen != nullptr) {
+		ScreenLoad(instance->screen);
+	}
+}
+void GameStop() {
+	instance->running = false;
+}
 
 void GameInit() {
 	if (IsWindowReady()) return;
@@ -20,8 +35,8 @@ void GameInit() {
 
 void GameDestroy() {
 	if (!IsWindowReady()) return;
+	GameSetScreen(nullptr);
 	MemFree(instance);
-	// TODO: Add something else
 	CloseAudioDevice();
 	CloseWindow();
 }
@@ -29,9 +44,11 @@ void GameDestroy() {
 void GameRun() {
 	if (!IsWindowReady()) return;
 	while(!WindowShouldClose() && instance->running) {
+		ScreenUpdate(instance->screen);
 		BeginDrawing();
 		ClearBackground(BLACK);
-		DrawText("hi there", 10, 10, 20, WHITE);
+		ScreenDraw(instance->screen);
+		// DrawText("hi there", 10, 10, 20, WHITE);
 		EndDrawing();
 	}
 	GameDestroy();
