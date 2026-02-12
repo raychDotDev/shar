@@ -1,4 +1,5 @@
 #include <game/game.h>
+#include <game/resman.h>
 #include <game/screen.h>
 #include <raylib.h>
 
@@ -29,6 +30,7 @@ void GameInit() {
 	InitAudioDevice();
 	InitWindow(720,480, "SHAR");
 	SetTargetFPS(60);
+	ResManInit();
 	instance = MemAlloc(sizeof(GameState));
 	instance->running = true;
 }
@@ -36,6 +38,7 @@ void GameInit() {
 void GameDestroy() {
 	if (!IsWindowReady()) return;
 	GameSetScreen(nullptr);
+	ResManDispose();
 	MemFree(instance);
 	CloseAudioDevice();
 	CloseWindow();
